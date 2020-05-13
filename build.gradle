@@ -1,0 +1,40 @@
+import groovy.json.JsonOutput
+
+file "build.properties" withReader {
+    def prop = new Properties()
+    prop.load(it)
+    ext.config = new ConfigSlurper().parse prop
+}
+
+version = "${config.minecraft.version}-${config.version}"
+
+task packMCMeta{
+  def data = [pack:[:]]
+
+  data.pack.pack_format = 1
+  data.pack.description = config.description + "\nVersion: " + project.version
+  data.pack.version = project.version
+
+  // Write the json_str to the configuration file
+  def pack_mcmeta = new File('resourcepacks/' + config.basename + '/pack.mcmeta')
+  pack_mcmeta.write(JsonOutput.prettyPrint(JsonOutput.toJson(data)) + "\n")
+}
+
+task zipPack(type: Zip) {
+  dependsOn packMCMeta
+
+  from fileTree(
+    dir: 'resourcepacks/' + config.basename,
+    excludes: [
+      '**/.*',
+      '**/~*',
+      '**/Thumbs.db'
+    ]
+  )
+  baseName = config.basename
+  destinationDir(file('build/'))
+}
+
+task build {
+    dependsOn zipPack
+}
