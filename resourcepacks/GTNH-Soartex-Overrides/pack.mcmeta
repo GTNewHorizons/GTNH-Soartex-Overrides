@@ -1,6 +1,7 @@
 {
-  "pack": {
-    "pack_format": 1,
-    "description": "GTNH's Soartex Overrides"
-  }
+    "pack": {
+        "pack_format": 1,
+        "description": "GTNH Soartex Overrides\nVersion: 1.7.10-1.0.0",
+        "version": "1.7.10-1.0.0"
+    }
 }
